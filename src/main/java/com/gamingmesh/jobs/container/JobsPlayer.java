@@ -407,6 +407,7 @@ public class JobsPlayer {
     public void reload(CurrencyType type) {
 	Parser eq = Jobs.getGCManager().getLimit(type).getMaxEquation();
 	eq.setVariable("totallevel", getTotalLevels());
+	eq.setVariable("totaljobs", getJobProgression().size()); // Firestarter - include total jobs variable
 
 	maxJobsEquation = Jobs.getPlayerManager().getMaxJobs(this);
 	limits.put(type, (int) eq.getValue());

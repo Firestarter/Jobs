@@ -66,7 +66,7 @@ public class BossBarManager {
 
 	String message = Jobs.getLanguage().getMessage("command.stats.bossBarOutput",
 	    "%joblevel%", Integer.toString(jobProg.getLevel()),
-	    "%jobname%", jobProg.getJob().getJobDisplayName(),
+	    "%jobname%", jobProg.getJob().getName(), // Firestarter - use plain text name
 	    "%jobxp%", formatter.format(Math.round(jobProg.getExperience() * 100.0) / 100.0),
 	    "%jobmaxxp%", jobProg.getMaxExperience(),
 	    "%gain%", gain);

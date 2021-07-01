@@ -5,8 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -92,16 +95,22 @@ public class GuiManager {
 	    Job job = jobsList.get(i);
 	    List<String> lore = new ArrayList<>();
 
+	    /* // Firestarter start - move current occupation into item name
 	    for (JobProgression onePJob : jPlayer.progression) {
 		if (onePJob.getJob().getName().equalsIgnoreCase(job.getName())) {
 		    lore.add(Jobs.getLanguage().getMessage("command.info.gui.working"));
 		    break;
 		}
 	    }
+	     */ // Firstarter end
 
+		// Firestarter start - rearrange lore elements
+		lore.addAll(Arrays.asList(job.getDescription().split("/n|\\n")));
+		/*
 	    int maxlevel = job.getMaxLevel(jPlayer);
 	    if (maxlevel > 0)
 		lore.add(Jobs.getLanguage().getMessage("command.info.gui.max") + maxlevel);
+		 */
 
 	    if (Jobs.getGCManager().ShowTotalWorkers)
 		lore.add(Jobs.getLanguage().getMessage("command.browse.output.totalWorkers", "[amount]", job.getTotalPlayers()));
@@ -118,7 +127,6 @@ public class GuiManager {
 	    if (job.getDescription().isEmpty()) {
 		lore.addAll(job.getFullDescription());
 	    } else
-		lore.addAll(Arrays.asList(job.getDescription().split("/n|\\n")));
 
 	    if (job.getMaxSlots() != null) {
 		int usedSlots = Jobs.getUsedSlots(job);
@@ -128,6 +136,7 @@ public class GuiManager {
 	    if (Jobs.getGCManager().ShowActionNames) {
 		lore.add("");
 		lore.add(Jobs.getLanguage().getMessage("command.info.gui.actions"));
+		// Firestarter end
 
 		for (ActionType actionType : ActionType.values()) {
 		    List<JobInfo> info = job.getJobInfo(actionType);
@@ -146,8 +155,12 @@ public class GuiManager {
 
 	    ItemStack guiItem = job.getGuiItem();
 	    ItemMeta meta = guiItem.getItemMeta();
-	    meta.setDisplayName(job.getJobDisplayName());
+	    meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&f&l" + job.getName() + (jPlayer.isInJob(job) ? " (&a&lworking&f&l)" : ""))); // Firestarter - move current occupation into item name
 	    meta.setLore(lore);
+	    // Firestarter start - add glint to items
+		meta.addEnchant(Enchantment.MENDING, 1, true);
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES);
+		// Firestarter end
 
 	    if (Jobs.getGCManager().hideItemAttributes) {
 		meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ATTRIBUTES, org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
@@ -176,6 +189,7 @@ public class GuiManager {
 		    case MiddleMouse:
 			Jobs.getCommandManager().onCommand(player, null, "jobs", new String[] { "leave", job.getName() });
 			openJobsBrowseGUI(player);
+			player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 1.0f, 1.0f); // Firestarter - add action sounds
 			break;
 		    case Right:
 		    case RightShift:
@@ -184,6 +198,7 @@ public class GuiManager {
 			} else {
 			    if (!Jobs.getGCManager().DisableJoiningJobThroughGui) {
 				Jobs.getCommandManager().onCommand(player, null, "jobs", new String[] { "join", job.getName() });
+				player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_TRADE, 1.0f, 1.0f); // Firestarter - add action sounds
 			    } else {
 				player.sendMessage(Jobs.getLanguage().getMessage("command.info.gui.cantJoin"));
 			    }

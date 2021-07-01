@@ -4,7 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.event.server.ServerCommandEvent;
 
 import com.gamingmesh.jobs.Jobs;
@@ -143,6 +149,17 @@ public class QuestProgression {
 
 	jPlayer.addDoneQuest(questJob);
 
+	// Firestarter start - send quest completed message
+	Component component = Component.text()
+			.append(Component.text("QUESTS: ").color(NamedTextColor.DARK_PURPLE).decorate(TextDecoration.BOLD))
+			.append(Component.text("Completed daily quest \"" + quest.getQuestName() + "\""))
+			.hoverEvent(HoverEvent.showText(Component.text("Click to view your daily quest progress.")))
+			.clickEvent(ClickEvent.runCommand("/quests"))
+			.build();
+
+	player.sendMessage(component);
+	player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.8f);
+	// Firestarter end
 	for (String one : quest.getRewardCmds()) {
 	    ServerCommandEvent ev = new ServerCommandEvent(Bukkit.getConsoleSender(), one.replace("[playerName]", player.getName()));
 	    Bukkit.getPluginManager().callEvent(ev);

@@ -53,8 +53,12 @@ public class JobsCommands implements CommandExecutor {
 	    return true;
 	}
 
-	if (args.length == 0)
-	    return help(sender, 1);
+	// Firestarter start - open browse menu by default
+	if (args.length == 0) {
+		getCmdClass("browse").perform(plugin, sender, new String[]{});
+		return true;
+	}
+	// Firestarter end
 
 	if ((args.length == 1 || args.length == 2) && (args[0].equals("?") || args[0].equalsIgnoreCase("help"))) {
 	    int page = 1;

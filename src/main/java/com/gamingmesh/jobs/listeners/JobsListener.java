@@ -441,6 +441,7 @@ public class JobsListener implements Listener {
 	return false;
     }
 
+    /* // Firestarter - disable event
     @EventHandler(ignoreCancelled = true)
     public void onChunkChangeMove(PlayerMoveEvent event) {
 	if (!event.getPlayer().isOnline() || !Jobs.getGCManager().canPerformActionInWorld(event.getTo().getWorld()))
@@ -451,6 +452,7 @@ public class JobsListener implements Listener {
 	if (from != to)
 	    plugin.getServer().getPluginManager().callEvent(new JobsChunkChangeEvent(event.getPlayer(), from, to));
     }
+     */ // Firestarter end
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
